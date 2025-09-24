@@ -1,0 +1,524 @@
+<%~ includeFile("partials/header.eta", {
+    user: user
+}); %>
+<%~ includeFile("partials/message.eta"); %>
+
+<style>
+.settings-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.settings-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+}
+
+.settings-card .card-body {
+    position: relative;
+    z-index: 2;
+}
+
+.form-control, .form-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: #fff;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    color: #fff;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.section-header {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: bold;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.section-header::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    border-radius: 2px;
+}
+
+.btn-gradient {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    padding: 12px 30px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+    color: white;
+}
+
+.floating-label {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.floating-label label {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.floating-label input:focus + label,
+.floating-label input:not(:placeholder-shown) + label,
+.floating-label select:focus + label,
+.floating-label textarea:focus + label {
+    top: -8px;
+    right: 10px;
+    font-size: 12px;
+    color: #4ecdc4;
+    background: rgba(102, 126, 234, 0.8);
+    padding: 2px 8px;
+    border-radius: 5px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.2);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.glow-effect {
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+    }
+    to {
+        box-shadow: 0 0 30px rgba(102, 126, 234, 0.4);
+    }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.music-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(102, 126, 234, 0.9);
+    border-radius: 50px;
+    padding: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    z-index: 1000;
+}
+
+.music-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.music-btn:hover {
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .settings-card {
+        margin: 10px;
+        border-radius: 15px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="container-fluid p-4" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh;">
+
+    <!-- عنوان الصفحة -->
+    <div class="text-center mb-4">
+        <h1 class="text-white" style="font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+            <i class="fas fa-cogs me-3"></i>
+            إعدادات البوت الشاملة
+        </h1>
+        <p class="text-white-50">تحكم كامل في جميع إعدادات البوت من مكان واحد</p>
+    </div>
+
+    <!-- الإحصائيات -->
+    <div class="stats-grid">
+        <div class="stat-card glow-effect">
+            <div class="stat-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h4 class="text-white">البادئة الحالية</h4>
+            <p class="text-white-50"><%= config.prefix %></p>
+        </div>
+        <div class="stat-card glow-effect">
+            <div class="stat-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h4 class="text-white">عدد الأدمن</h4>
+            <p class="text-white-50"><%= config.adminBot.length %></p>
+        </div>
+        <div class="stat-card glow-effect">
+            <div class="stat-icon">
+                <i class="fas fa-language"></i>
+            </div>
+            <h4 class="text-white">اللغة</h4>
+            <p class="text-white-50"><%= config.language %></p>
+        </div>
+        <div class="stat-card glow-effect">
+            <div class="stat-icon">
+                <i class="fas fa-database"></i>
+            </div>
+            <h4 class="text-white">نوع قاعدة البيانات</h4>
+            <p class="text-white-50"><%= config.database.type %></p>
+        </div>
+    </div>
+
+    <form method="POST" action="/dashboard/bot-settings">
+        
+        <!-- إعدادات أساسية -->
+        <div class="settings-card mb-4">
+            <div class="card-body">
+                <h3 class="section-header">الإعدادات الأساسية</h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="floating-label">
+                            <input type="text" class="form-control" name="prefix" value="<%= config.prefix %>" placeholder=" " required>
+                            <label>البادئة</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="floating-label">
+                            <input type="text" class="form-control" name="nickNameBot" value="<%= config.nickNameBot %>" placeholder=" " required>
+                            <label>اسم البوت</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="floating-label">
+                            <select class="form-select" name="language" required>
+                                <option value="ar" <%= config.language === 'ar' ? 'selected' : '' %>>العربية</option>
+                                <option value="en" <%= config.language === 'en' ? 'selected' : '' %>>English</option>
+                                <option value="vi" <%= config.language === 'vi' ? 'selected' : '' %>>Tiếng Việt</option>
+                            </select>
+                            <label>اللغة</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="floating-label">
+                            <input type="number" class="form-control" name="autoRestart_time" value="<%= config.autoRestart.time || '' %>" placeholder=" ">
+                            <label>وقت إعادة التشغيل التلقائي (بالملي ثانية)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- إدارة الأدمن -->
+        <div class="settings-card mb-4">
+            <div class="card-body">
+                <h3 class="section-header">إدارة المشرفين</h3>
+                
+                <div class="floating-label">
+                    <input type="text" class="form-control" name="adminBot" value="<%= config.adminBot.join(', ') %>" placeholder=" ">
+                    <label>معرفات المشرفين (مفصولة بفواصل)</label>
+                </div>
+                <small class="text-white-50">أدخل معرفات الفيسبوك للمشرفين مفصولة بفواصل</small>
+            </div>
+        </div>
+
+        <!-- إعدادات القائمة البيضاء -->
+        <div class="settings-card mb-4">
+            <div class="card-body">
+                <h3 class="section-header">إعدادات التحكم في الوصول</h3>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <label class="switch me-3">
+                                <input type="checkbox" name="whiteListMode_enable" value="true" <%= config.whiteListMode.enable ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="text-white">تفعيل القائمة البيضاء للمستخدمين</span>
+                        </div>
+                        <div class="floating-label">
+                            <input type="text" class="form-control" name="whiteListIds" value="<%= config.whiteListMode.whiteListIds ? config.whiteListMode.whiteListIds.join(', ') : '' %>" placeholder=" ">
+                            <label>معرفات المستخدمين المسموحين</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <label class="switch me-3">
+                                <input type="checkbox" name="whiteListModeThread_enable" value="true" <%= config.whiteListModeThread.enable ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="text-white">تفعيل القائمة البيضاء للمجموعات</span>
+                        </div>
+                        <div class="floating-label">
+                            <input type="text" class="form-control" name="whiteListThreadIds" value="<%= config.whiteListModeThread.whiteListThreadIds ? config.whiteListModeThread.whiteListThreadIds.join(', ') : '' %>" placeholder=" ">
+                            <label>معرفات المجموعات المسموحة</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- إعدادات إخفاء الرسائل -->
+        <div class="settings-card mb-4">
+            <div class="card-body">
+                <h3 class="section-header">إعدادات إخفاء الرسائل</h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <label class="switch me-3">
+                                <input type="checkbox" name="hideCommandNotFound" value="true" <%= config.hideNotiMessage.commandNotFound ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="text-white">إخفاء رسالة "الأمر غير موجود"</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <label class="switch me-3">
+                                <input type="checkbox" name="hideAdminOnly" value="true" <%= config.hideNotiMessage.adminOnly ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="text-white">إخفاء رسالة "للمشرفين فقط"</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <label class="switch me-3">
+                                <input type="checkbox" name="hideThreadBanned" value="true" <%= config.hideNotiMessage.threadBanned ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="text-white">إخفاء رسالة "المجموعة محظورة"</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <label class="switch me-3">
+                                <input type="checkbox" name="hideUserBanned" value="true" <%= config.hideNotiMessage.userBanned ? 'checked' : '' %>>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="text-white">إخفاء رسالة "المستخدم محظور"</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- زر الحفظ -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-gradient btn-lg">
+                <i class="fas fa-save me-2"></i>
+                حفظ جميع الإعدادات
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<!-- مشغل الموسيقى العائم -->
+<div class="music-controls">
+    <button class="music-btn" onclick="toggleMusic()" id="musicToggle">
+        <i class="fas fa-music"></i>
+    </button>
+    <button class="music-btn" onclick="nextTrack()">
+        <i class="fas fa-step-forward"></i>
+    </button>
+    <button class="music-btn" onclick="toggleVolume()" id="volumeToggle">
+        <i class="fas fa-volume-up"></i>
+    </button>
+</div>
+
+<!-- مشغل الصوت المخفي -->
+<audio id="backgroundMusic" loop>
+    <source src="/dashboard/music/ambient1.mp3" type="audio/mpeg">
+    <source src="/dashboard/music/ambient2.mp3" type="audio/mpeg">
+    <source src="/dashboard/music/ambient3.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let isPlaying = false;
+let currentTrack = 0;
+let isMuted = false;
+const tracks = [
+    '/dashboard/music/ambient1.mp3',
+    '/dashboard/music/ambient2.mp3', 
+    '/dashboard/music/ambient3.mp3'
+];
+
+const audio = document.getElementById('backgroundMusic');
+
+function toggleMusic() {
+    const musicToggle = document.getElementById('musicToggle');
+    
+    if (isPlaying) {
+        audio.pause();
+        musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+        isPlaying = false;
+    } else {
+        audio.play().catch(e => console.log('Auto-play prevented'));
+        musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+        isPlaying = true;
+    }
+}
+
+function nextTrack() {
+    currentTrack = (currentTrack + 1) % tracks.length;
+    audio.src = tracks[currentTrack];
+    if (isPlaying) {
+        audio.play();
+    }
+}
+
+function toggleVolume() {
+    const volumeToggle = document.getElementById('volumeToggle');
+    
+    if (isMuted) {
+        audio.muted = false;
+        volumeToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+        isMuted = false;
+    } else {
+        audio.muted = true;
+        volumeToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        isMuted = true;
+    }
+}
+
+// تأثيرات بصرية إضافية
+document.addEventListener('DOMContentLoaded', function() {
+    // تأثير الجاذبية للبطاقات
+    const cards = document.querySelectorAll('.settings-card');
+    cards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        }, index * 200);
+    });
+});
+</script>
+
+<%~ includeFile("partials/footer.eta") %>
